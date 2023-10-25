@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from "../iam/decorators/active-user.decorator";
+import { ActiveUserData } from "../iam/interfaces/active-user-data.interface";
 
 @Controller('users')
 export class UsersController {
@@ -14,7 +15,7 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@ActiveUser() user) {
+  findAll(@ActiveUser() user: ActiveUserData) {
     console.log(user);
     return this.usersService.findAll();
   }
