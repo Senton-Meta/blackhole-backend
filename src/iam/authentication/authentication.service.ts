@@ -31,6 +31,7 @@ export class AuthenticationService {
       const user = new User();
       user.email = signUpDto.email;
       user.password = await this.hashingService.hash(signUpDto.password);
+      user.roles = ['user']
 
       await this.usersRepository.save(user);
     } catch (err) {
@@ -65,7 +66,10 @@ export class AuthenticationService {
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
-        { email: user.email }
+        {
+          email: user.email;
+          roles: user.roles;
+        }
       ),
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl)
     ]);
@@ -79,15 +83,15 @@ export class AuthenticationService {
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
       const { sub } = await this.jwtService.verifyAsync<
-        Pick<ActiveUserData, 'sub'>
+        Pick<ActiveUserData, "sub">
       >(refreshTokenDto.refreshToken, {
         secret: this.jwtConfiguration.secret,
         audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
+        issuer: this.jwtConfiguration.issuer
       });
 
       const user = await this.usersRepository.findOneByOrFail({
-        id: sub,
+        id: sub
       });
 
       return this.generateTokens(user);
