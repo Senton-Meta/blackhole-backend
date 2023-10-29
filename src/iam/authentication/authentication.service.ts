@@ -48,8 +48,9 @@ export class AuthenticationService {
   }
 
   async signIn(signInDto: SignInDto) {
-    const user = await this.usersRepository.findOneBy({
-      email: signInDto.email
+    const user = await this.usersRepository.findOne({
+      where: {email: signInDto.email},
+      relations: {roles: true}
     });
     if (!user) {
       throw new UnauthorizedException("Пользователь не существует!");
@@ -71,7 +72,8 @@ export class AuthenticationService {
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         {
-          email: user.email
+          email: user.email,
+          roles: user.roles,
         }
       ),
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl)
@@ -93,8 +95,9 @@ export class AuthenticationService {
         issuer: this.jwtConfiguration.issuer
       });
 
-      const user = await this.usersRepository.findOneByOrFail({
-        id: sub
+      const user = await this.usersRepository.findOneOrFail({
+        where: {id: sub},
+        relations: {roles: true}
       });
 
       return this.generateTokens(user);
