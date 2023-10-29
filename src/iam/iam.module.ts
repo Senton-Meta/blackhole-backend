@@ -12,10 +12,11 @@ import {APP_GUARD} from "@nestjs/core";
 import {AccessTokenGuard} from "./authentication/guards/access-token/access-token.guard";
 import { AuthenticationGuard } from "./authentication/guards/authentication/authentication.guard";
 import { RolesService } from "../roles/roles.service";
+import { Role } from "../roles/entities/role.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
   ],

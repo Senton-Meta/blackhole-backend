@@ -21,18 +21,21 @@ import { Role } from "../../roles/entities/role.entity";
 export class AuthenticationService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-
+    @InjectRepository(Role) private readonly rolesRepository: Repository<Role>,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
-
     @Inject(jwtConfig.KEY) private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
-  ) {}
+  ) {
+  }
 
   async signUp(signUpDto: SignUpDto) {
     try {
       const user = new User();
       user.email = signUpDto.email;
       user.password = await this.hashingService.hash(signUpDto.password);
+      user.roles = [
+        await this.rolesRepository.findOneBy({ name: "user" })
+      ];
 
       await this.usersRepository.save(user);
     } catch (err) {
@@ -68,7 +71,7 @@ export class AuthenticationService {
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         {
-          email: user.email,
+          email: user.email
         }
       ),
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl)
