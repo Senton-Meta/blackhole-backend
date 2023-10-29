@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { IamModule } from './iam/iam.module';
       synchronize: true,
     }),
     IamModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

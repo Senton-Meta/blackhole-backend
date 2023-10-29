@@ -15,23 +15,24 @@ import jwtConfig from "../config/jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { ActiveUserData } from "../interfaces/active-user-data.interface";
 import { RefreshTokenDto } from "./dto/refresh-token.dto";
+import { Role } from "../../roles/entities/role.entity";
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
+
     @Inject(jwtConfig.KEY) private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
-  ) {
-  }
+  ) {}
 
   async signUp(signUpDto: SignUpDto) {
     try {
       const user = new User();
       user.email = signUpDto.email;
       user.password = await this.hashingService.hash(signUpDto.password);
-      user.roles = ['user']
 
       await this.usersRepository.save(user);
     } catch (err) {
@@ -67,8 +68,7 @@ export class AuthenticationService {
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         {
-          email: user.email;
-          roles: user.roles;
+          email: user.email,
         }
       ),
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl)
