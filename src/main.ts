@@ -14,6 +14,7 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: 'Content-Type, Accept',
   });
+  app.setGlobalPrefix('api/v1');
   await app.listen(3000);
 }
 bootstrap();
