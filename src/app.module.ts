@@ -6,11 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
 import { RolesModule } from './roles/roles.module';
+import {RouterModule} from "@nestjs/core";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    UsersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -21,8 +21,23 @@ import { RolesModule } from './roles/roles.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    IamModule,
+    UsersModule,
     RolesModule,
+    IamModule,
+    RouterModule.register([
+      {
+        path: 'users',
+        module: UsersModule,
+      },
+      {
+        path: 'roles',
+        module: RolesModule,
+      },
+      {
+        path: 'authentication',
+        module: IamModule,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from "../iam/decorators/active-user.decorator";
 import { ActiveUserData } from "../iam/interfaces/active-user-data.interface";
 
-@Controller('users')
+@Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -34,4 +34,6 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+  @Patch(':id/roles')
 }
