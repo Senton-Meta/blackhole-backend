@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res } from "@nestjs/common";
 import { Response } from "express";
 import { AuthenticationService } from "./authentication.service";
 import { SignUpDto } from "./dto/sign-up.dto/sign-up.dto";
@@ -13,35 +13,42 @@ export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {
   }
 
-  @Post('sign-up')
+  @Post("sign-up")
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
   }
 
   // Cookies realization
+  @HttpCode(HttpStatus.OK)
+  @Post("sign-in")
+  async signIn(
+    @Res({ passthrough: true }) response: Response,
+    @Body() signInDto: SignInDto
+  ) {
+    const accessToken = await this.authService.signIn(signInDto);
+    response.cookie("access_token", accessToken, {
+      secure: false,
+      httpOnly: true,
+      sameSite: true
+    });
+    return signInDto;
+  }
+
   // @HttpCode(HttpStatus.OK)
   // @Post('sign-in')
-  // async signIn(
-  //   @Res({ passthrough: true }) response: Response,
-  //   @Body() signInDto: SignInDto
-  // ) {
-  //   const accessToken = await this.authService.signIn(signInDto);
-  //   response.cookie('accessToken', accessToken, {
-  //     secure: false,
-  //     httpOnly: true,
-  //     sameSite: true,
-  //   });
+  // signIn(@Body() signInDto: SignInDto) {
+  //   return this.authService.signIn(signInDto);
   // }
 
   @HttpCode(HttpStatus.OK)
-  @Post('sign-in')
-  signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
+  @Post("refresh-tokens")
+  refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('refresh-tokens')
-  refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshTokens(refreshTokenDto);
+  @Get("signout")
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.cookie('access_token', '', { expires: new Date() });
   }
 }
