@@ -35,6 +35,7 @@ export class AuthenticationController {
 
     const userData = {
       id: user.id,
+      username: user.username,
       email: user.email,
       roles: user.roles
     };

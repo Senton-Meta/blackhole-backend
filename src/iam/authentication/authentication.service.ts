@@ -31,6 +31,7 @@ export class AuthenticationService {
   async signUp(signUpDto: SignUpDto) {
     try {
       const user = new User();
+      user.username = signUpDto.username;
       user.email = signUpDto.email;
       user.password = await this.hashingService.hash(signUpDto.password);
       user.roles = [
@@ -64,6 +65,7 @@ export class AuthenticationService {
     }
 
     const tokens = await this.generateTokens(user);
+    console.log(user)
     return { ...tokens, user }
   }
 
