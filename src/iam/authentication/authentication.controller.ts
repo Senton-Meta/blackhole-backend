@@ -25,13 +25,21 @@ export class AuthenticationController {
     @Res({ passthrough: true }) response: Response,
     @Body() signInDto: SignInDto
   ) {
-    const accessToken = await this.authService.signIn(signInDto);
+    const { accessToken, refreshToken, user } = await this.authService.signIn(signInDto);
     response.cookie("access_token", accessToken, {
       secure: true,
       httpOnly: true,
       sameSite: true
     });
-    return signInDto;
+    response.header({ 'refreshToken': refreshToken });
+
+    const userData = {
+      id: user.id,
+      email: user.email,
+      roles: user.roles
+    };
+
+    return userData;
   }
 
   // @HttpCode(HttpStatus.OK)

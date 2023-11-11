@@ -63,7 +63,8 @@ export class AuthenticationService {
       throw new UnauthorizedException("Неверный логин/пароль");
     }
 
-    return await this.generateTokens(user);
+    const tokens = await this.generateTokens(user);
+    return { ...tokens, user }
   }
 
   async generateTokens(user: User) {
