@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
 import { RolesModule } from './roles/roles.module';
 import {RouterModule} from "@nestjs/core";
+import { SandboxModule } from './sandbox/sandbox.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import {RouterModule} from "@nestjs/core";
     UsersModule,
     RolesModule,
     IamModule,
+    SandboxModule,
     RouterModule.register([
       {
         path: 'users',
@@ -37,7 +39,12 @@ import {RouterModule} from "@nestjs/core";
         path: 'authentication',
         module: IamModule,
       },
+      {
+        path: 'sandbox',
+        module: SandboxModule,
+      }
     ]),
+
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,7 +11,6 @@ import {ConfigModule} from "@nestjs/config";
 import {APP_GUARD} from "@nestjs/core";
 import {AccessTokenGuard} from "./authentication/guards/access-token/access-token.guard";
 import { AuthenticationGuard } from "./authentication/guards/authentication/authentication.guard";
-import { RolesService } from "../roles/roles.service";
 import { Role } from "../roles/entities/role.entity";
 
 @Module({
