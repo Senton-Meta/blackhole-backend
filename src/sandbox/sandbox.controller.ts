@@ -14,18 +14,7 @@ export class SandboxController {
   ) {
   }
 
-  @Roles([
-    {
-      id: 1,
-      name: "user",
-      level: 1
-    },
-    {
-      id: 2,
-      name: "user-pro",
-      level: 2
-    }
-  ])
+  @Roles(['user-pro'])
   @Get()
   testRole() {
     return this.sandboxService.testRole();

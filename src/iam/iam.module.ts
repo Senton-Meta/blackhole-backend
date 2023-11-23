@@ -13,6 +13,7 @@ import {AccessTokenGuard} from "./authentication/guards/access-token/access-toke
 import { AuthenticationGuard } from "./authentication/guards/authentication/authentication.guard";
 import { Role } from "../roles/entities/role.entity";
 import {RolesGuard} from "./authorization/guards/roles/roles.guard";
+import {RolesService} from "../roles/roles.service";
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import {RolesGuard} from "./authorization/guards/roles/roles.guard";
       useClass: RolesGuard,
     },
     AccessTokenGuard,
-    AuthenticationService
+    AuthenticationService,
+    RolesService,
   ],
   controllers: [AuthenticationController]
 })
