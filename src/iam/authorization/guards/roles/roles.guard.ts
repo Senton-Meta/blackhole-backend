@@ -25,7 +25,9 @@ export class RolesGuard implements CanActivate {
       .getRequest()[REQUEST_USER_KEY];
 
     return contextRoles.some((requiredRole) => {
-      return user.roles[0].id === requiredRole.id;
-    })
+      return user.roles.some((role) => {
+        return role.id === requiredRole.id;
+      });
+    });
   }
 }

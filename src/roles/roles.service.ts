@@ -3,7 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Role } from "./entities/role.entity";
-import { Repository } from "typeorm";
+import {In, Repository} from "typeorm";
 
 @Injectable()
 export class RolesService {
@@ -29,6 +29,14 @@ export class RolesService {
 
   findAll() {
     return this.rolesRepository.find();
+  }
+
+  findAllByName(roleNames: string[]) {
+    return this.rolesRepository.find({
+      where: [
+        { name: In(roleNames) },
+      ],
+    });
   }
 
   findOne(id: number) {
