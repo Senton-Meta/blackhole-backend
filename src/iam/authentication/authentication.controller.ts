@@ -31,7 +31,6 @@ export class AuthenticationController {
       httpOnly: true,
       sameSite: true
     });
-    response.header({ 'refreshToken': refreshToken });
 
     const userData = {
       id: user.id,
@@ -40,7 +39,7 @@ export class AuthenticationController {
       roles: user.roles
     };
 
-    return userData;
+    return {refreshToken, userData};
   }
 
   // @HttpCode(HttpStatus.OK)
