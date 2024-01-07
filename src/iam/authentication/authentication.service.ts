@@ -16,6 +16,7 @@ import { ConfigType } from "@nestjs/config";
 import { ActiveUserData } from "../interfaces/active-user-data.interface";
 import { RefreshTokenDto } from "./dto/refresh-token.dto";
 import { Role } from "../../roles/entities/role.entity";
+import { AutoLoginDto } from "./dto/auto-login.dto/auto-login.dto";
 
 @Injectable()
 export class AuthenticationService {
@@ -67,6 +68,15 @@ export class AuthenticationService {
     const tokens = await this.generateTokens(user);
     console.log(user);
     return { ...tokens, user };
+  }
+
+  async autoLogin(token: string) {
+    console.log('- - - - TOKEN DECODE');
+    console.log(`token: ${token}`);
+    console.log('decoded:');
+    console.dir(this.jwtService.decode(token));
+
+    return {};
   }
 
   async generateTokens(user: User) {
