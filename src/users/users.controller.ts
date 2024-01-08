@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from "../iam/decorators/active-user.decorator";
 import { ActiveUserData } from "../iam/interfaces/active-user-data.interface";
 import {UpdateUserRolesDto} from "./dto/update-user-roles.dto";
+import { Roles } from "../iam/authorization/decorators/roles.decorator";
 
 @Controller()
 export class UsersController {
@@ -21,6 +22,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Roles(['user-pro'])
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);

@@ -20,7 +20,7 @@ export class AccessTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('There is no token!');
     }
     try {
       const payload = await this.jwtService.verifyAsync(
@@ -29,14 +29,14 @@ export class AccessTokenGuard implements CanActivate {
       );
       request[REQUEST_USER_KEY] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Token has not been verified!');
     }
 
     return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [_, token] = request.headers.authorization?.split(" ") ?? [];
+    const token = request.cookies.access_token ?? '';
     return token;
   }
 }

@@ -5,7 +5,10 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Role} from "../roles/entities/role.entity";
 import {Repository} from "typeorm";
 import {RolesService} from "../roles/roles.service";
+import { Auth } from "../iam/authentication/decorators/auth.decorator";
+import { AuthType } from "../iam/authentication/enums/auth-type.enum";
 
+@Auth(AuthType.Bearer)
 @Controller()
 export class SandboxController {
   constructor(

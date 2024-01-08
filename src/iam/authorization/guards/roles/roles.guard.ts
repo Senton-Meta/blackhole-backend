@@ -6,12 +6,16 @@ import {ROLES_KEY} from "../../decorators/roles.decorator";
 import {ActiveUserData} from "../../../interfaces/active-user-data.interface";
 import {REQUEST_USER_KEY} from "../../../iam.constants";
 import {RolesService} from "../../../../roles/roles.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../../../../users/entities/user.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly reflector: Reflector,
-    private readonly rolesService: RolesService
+    private readonly rolesService: RolesService,
   ) {
   }
 
@@ -27,8 +31,10 @@ export class RolesGuard implements CanActivate {
 
     const requiredRoles: Role[] = await this.rolesService.findAllByName(contextRoles);
 
-    const user: ActiveUserData = context.switchToHttp()
-      .getRequest()[REQUEST_USER_KEY];
+    const user = await this.usersRepository.findOne({
+      where: { id: context.switchToHttp().getRequest().user.sub },
+      relations: { roles: true },
+    });
 
     return requiredRoles.some((requiredRole) => {
       return user.roles.some((role) => {
