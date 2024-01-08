@@ -44,16 +44,23 @@ export class AuthenticationController {
     return {refreshToken, userData};
   }
 
-  @Auth(AuthType.Bearer)
   @HttpCode(HttpStatus.OK)
   @Post("autologin")
   async autoLogin(
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request
   ) {
-    await this.authService.autoLogin(request.cookies['access_token']);
+    console.log('- - - - /authentication/autologin')
+    const {user} = await this.authService.autoLogin(request.cookies['access_token']);
 
-    return {};
+    const userData = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      roles: user.roles
+    };
+
+    return { userData };
   }
 
   @HttpCode(HttpStatus.OK)

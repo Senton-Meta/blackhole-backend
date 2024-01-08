@@ -66,17 +66,19 @@ export class AuthenticationService {
     }
 
     const tokens = await this.generateTokens(user);
-    console.log(user);
     return { ...tokens, user };
   }
 
   async autoLogin(token: string) {
-    console.log('- - - - TOKEN DECODE');
-    console.log(`token: ${token}`);
-    console.log('decoded:');
-    console.dir(this.jwtService.decode(token));
-
-    return {};
+    const decodedToken: any = this.jwtService.decode(token);
+    const user = await this.usersRepository.findOne({
+      where: { email: decodedToken.email },
+      relations: { roles: true },
+    });
+    if (!user) {
+      throw new UnauthorizedException("Пользователь не существует!");
+    }
+    return { user };
   }
 
   async generateTokens(user: User) {
